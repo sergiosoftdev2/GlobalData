@@ -1,0 +1,6 @@
+﻿cs50==9.2.5
+Flask==2.2.5
+Flask-Session==0.5.0
+gdown==4.7.1
+Jinja2==3.1.2
+gunicorn==19.7.1
