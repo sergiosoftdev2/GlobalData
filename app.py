@@ -64,9 +64,7 @@ def trycountries():
         # Obtener el CountryCode para el país seleccionado
         query = f"SELECT country_code FROM wdi_country WHERE short_name = '{session['country']}'"
         getcountrycode = turso_request(query)
-        
-        if getcountrycode:
-            session["countrycode"] = getcountrycode['results'][0]['response']['result']["rows"][0][0]["value"]
+        session["countrycode"] = getcountrycode['results'][0]['response']['result']["rows"][0][0]["value"]
 
         return redirect("/tryseries")
 
