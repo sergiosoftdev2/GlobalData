@@ -50,23 +50,21 @@
       <span class="fdash glassycontainer">
         <canvas id="fdash" style="height: 65dvh;">
           <script>
-
-            console.log({{ datakeys }})
-
-            var xValues = {{ datakeys }};
-            var yValues = {{ datavalues }};
+            console.log({{ datakeys | tojson }});
+          
+            var xValues = {{ datakeys | tojson }};
+            var yValues = {{ datavalues | tojson }};
             var barColors = [
               "#7a5af5",
             ];
-
+          
             const fdash = document.getElementById("fdash").getContext("2d");
             const bgGradient = fdash.createLinearGradient(0, 0, 0, 400);
-
-            bgGradient.addColorStop(0,"rgba(122, 90, 245, 1)")
-            bgGradient.addColorStop(1,"rgba(122, 90, 245, 0.02)")
-
+          
+            bgGradient.addColorStop(0,"rgba(122, 90, 245, 1)");
+            bgGradient.addColorStop(1,"rgba(122, 90, 245, 0.02)");
+          
             new Chart(fdash, {
-
               type: "line",
               data: {
                 labels: xValues,
@@ -78,13 +76,11 @@
                   color: ['#fffffff']
                 }]
               },
-
               options: {
                 title: {
                   display: true,
                   text: "World Wide Wine Production",
                 },
-
                 plugins: {
                   legend: {
                     labels: {
@@ -95,22 +91,15 @@
                     display: false
                   }
                 },
-
                 responsive: true,
-
                 layout: {
-                    padding: 80
+                  padding: 80
                 },
-
-                maintainAspectRatio: false,
-
-                layout: {
-                    padding: 50
-                }
-
+                maintainAspectRatio: false
               }
             });
           </script>
+          
         </canvas>
       </span>
     </nav>
