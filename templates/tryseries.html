@@ -1,18 +1,20 @@
-{% extends "layout.html" %} {% block body %}
+{% extends "layout.html" %} 
+{% block body %}
 
 <span class="trybackground">
   <span class="tryformcontainer glassycontainer">
     <h1>Select Series:</h1>
 
     <nav id="tryformcontainer">
-      <form method="POST" action="/tryseries">
-        <select name="selectedseries">
+      <form method="POST" action="/tryseries" id="seriesForm">
+        <select name="selectedseries" id="seriesSelect">
           {% for i in series %}
-
-          <option>{{ i }}</option>
-
+            <option data-series="{{ i[2]['value'] }}">{{ i[0]["value"] }}</option>
           {% endfor %}
         </select>
+        
+        <!-- Campo oculto para enviar el valor de data-series -->
+        <input type="hidden" name="series_data" id="seriesData" />
 
         <nav class="submitbutton">
           <button type="submit">Finish</button>
@@ -21,5 +23,16 @@
     </nav>
   </span>
 </span>
+
+<!-- Script para capturar el valor de data-series -->
+<script>
+  document.getElementById("seriesForm").onsubmit = function(event) {
+    // Obtener el valor de la opción seleccionada
+    var selectedOption = document.getElementById("seriesSelect").selectedOptions[0];
+    
+    // Establecer el valor de data-series en el campo oculto
+    document.getElementById("seriesData").value = selectedOption.getAttribute("data-series");
+  };
+</script>
 
 {% endblock %}

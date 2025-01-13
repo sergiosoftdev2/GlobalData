@@ -1,9 +1,6 @@
 from flask import Flask, render_template, redirect, request, session
 from flask_session import Session
-import os
-import gdown
 import requests
-import json
 
 # URL de la base de datos de Turso y token de autenticación
 DB_URL = "https://globaldata-sergiosoftdev2.turso.io/v2/pipeline"
@@ -38,12 +35,10 @@ selectedcountry = ""
 @app.route('/', methods=["GET", "POST"])
 def hello_world():
     if request.method == "GET":
-        print("success")
         return render_template("/index.html")
 
     elif request.method == "POST":
         inputform = request.form.get("inputform")
-        print(inputform)
         return render_template("/index.html")
 
 @app.route("/trycountries", methods=["GET", "POST"])
@@ -51,9 +46,8 @@ def trycountries():
     if request.method == "GET":
         countries = []
         # Hacer consulta a la API de Turso en lugar de usar SQLite
-        query = "SELECT ShortName FROM WDICountry"
+        query = "SELECT short_name FROM wdi_country"
         getcountries = turso_request(query)
-        
 
         newCountries = getcountries["results"][0]['response']['result']['rows']
 
@@ -68,16 +62,11 @@ def trycountries():
         session["country"] = selectedcountry
 
         # Obtener el CountryCode para el país seleccionado
-        query = f"SELECT CountryCode FROM WDICountry WHERE ShortName = '{session['country']}'"
+        query = f"SELECT country_code FROM wdi_country WHERE short_name = '{session['country']}'"
         getcountrycode = turso_request(query)
-
-        print(getcountrycode)
         
         if getcountrycode:
             session["countrycode"] = getcountrycode['results'][0]['response']['result']["rows"][0][0]["value"]
-
-        print(session["country"])
-        print(session["countrycode"])
 
         return redirect("/tryseries")
 
@@ -86,23 +75,27 @@ def tryseries():
     if request.method == "GET":
         series = []
         # Obtener las series para el país seleccionado
-        query = f"SELECT IndicatorName FROM WDIData WHERE CountryCode = '{session['countrycode']}'"
-        getseries = turso_request(query)
+        # Obtener las series para el país seleccionado
+        query = f"SELECT a.indicator_name, b.countrycode, b.seriescode " \
+                f"FROM wdi_series a INNER JOIN wdi_country_series b ON " \
+                f"a.series_code = b.seriescode WHERE b.countrycode = '{session['countrycode']}'"
 
-        print(getseries)    
+        
+        getseries = turso_request(query)
 
         getNewSeries = getseries['results'][0]['response']['result']["rows"]
 
         if getseries:
             for i in getNewSeries:
-                series.append(i[0]["value"])
+                series.append(i)
 
-        return render_template("/tryseries.html", series=series)
+        return render_template("/tryseries.html", series=series,)
 
     if request.method == "POST":
-        gettheseries = request.form.get("selectedseries")
+
+        gettheseries = request.form['series_data']
         # Obtener los datos de la serie seleccionada
-        query = f"SELECT * FROM WDIData WHERE CountryCode = '{session['countrycode']}' AND IndicatorName = '{gettheseries}'"
+        query = f"SELECT * FROM wdi_Data WHERE country_code = '{session['countrycode']}' AND indicator_code = '{gettheseries}'"
         getdata = turso_request(query)
 
         if getdata:
@@ -118,17 +111,24 @@ def results():
 
         dataDict = {}
 
-        columns = []
-        rows = []
+        
 
-        cols = data['cols']
-        rs = data['rows'][0]
+        for year in data["rows"]:
 
-        for col, row in zip(cols, rs):
-            if(row["type"] == "text"):
-                dataDict[col["name"]] = row["value"]
+            newKey = None
+            newValue = None
 
-        print()
+            for floatValue in year:
+                if(floatValue["type"] == "integer"):
+                    newKey = floatValue["value"]
+                if(floatValue["type"] == "float"):
+                    newValue = floatValue["value"]
+
+            if year is not None and newValue is not None:
+                dataDict[newKey] = newValue     
+
+
+
 
         datakeys = list(dataDict.keys())[4:]
         datavalues = list(dataDict.values())[4:]
