@@ -7,7 +7,7 @@ import json
 
 # URL de la base de datos de Turso y token de autenticación
 DB_URL = "https://globaldata-sergiosoftdev2.turso.io/v2/pipeline"
-DB_TOKEN = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3MzY3NjIwMTcsImlkIjoiMjhjMDAwYWItNDg4Mi00N2JlLTlmY2ItOWMxOGUwNzcyOTVmIn0.fo2XYrBUaKckAOxrBck03ohb9iocQkTcBUTqiBBnMkz1AAYnbVMKbfYbPZESXTQhtrqr3wQsh3rErI4i2zJ7AQ"
+DB_TOKEN = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3MzY3ODU4MDUsImlkIjoiMTJkMDZkNmEtMzgyZi00MjFjLTg2MTktOGQ3NGUxOWY1MjgzIn0.i6sAopB0EsSmHSNKYUFXbLVDkEWeHO8qQX8diboTx0zgYroKkUSAcpY1Ffiu03ZjavmbCIGjWHMNZ4KRiLBEDQ"
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
